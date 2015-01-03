@@ -13,13 +13,11 @@
     "ssh_username": "ec2-user",
     "ami_name": "InfluxDB {{timestamp}}"
   }],
-  "provisioners": [
-    {
-      "type": "chef-solo",
-      "cookbook_paths": ["cookbooks"],
-      "run_list": [
-        "recipe[influxdb::default]"
-      ]
-    }
-  ]
+  "provisioners": [{
+    "type": "chef-solo",
+    "cookbook_paths": ["cookbooks"],
+    "run_list": [
+      "recipe[influxdb::default]"
+    ]
+  }]
 }

@@ -4,3 +4,42 @@
 [submodule "cookbooks/influxdb"]
 	path = cookbooks/influxdb
 	url = https://github.com/zeroXten/influxdb-chef.git
+[submodule "cookbooks/statsd"]
+	path = cookbooks/statsd
+	url = https://github.com/librato/statsd-cookbook.git
+[submodule "cookbooks/git"]
+	path = cookbooks/git
+	url = https://github.com/jssjr/git.git
+[submodule "cookbooks/nodejs"]
+	path = cookbooks/nodejs
+	url = https://github.com/redguide/nodejs.git
+[submodule "cookbooks/collectd"]
+	path = cookbooks/collectd
+	url = https://github.com/hectcastro/chef-collectd.git
+[submodule "cookbooks/build-essential"]
+	path = cookbooks/build-essential
+	url = https://github.com/opscode-cookbooks/build-essential.git
+[submodule "cookbooks/dmg"]
+	path = cookbooks/dmg
+	url = https://github.com/opscode-cookbooks/dmg.git
+[submodule "cookbooks/runit"]
+	path = cookbooks/runit
+	url = https://github.com/hw-cookbooks/runit.git
+[submodule "cookbooks/yum"]
+	path = cookbooks/yum
+	url = https://github.com/opscode-cookbooks/yum.git
+[submodule "cookbooks/yum-epel"]
+	path = cookbooks/yum-epel
+	url = https://github.com/opscode-cookbooks/yum-epel.git
+[submodule "cookbooks/windows"]
+	path = cookbooks/windows
+	url = https://github.com/opscode-cookbooks/windows.git
+[submodule "cookbooks/chef_handler"]
+	path = cookbooks/chef_handler
+	url = https://github.com/opscode-cookbooks/chef_handler.git
+[submodule "cookbooks/apt"]
+	path = cookbooks/apt
+	url = https://github.com/opscode-cookbooks/apt.git
+[submodule "cookbooks/ark"]
+	path = cookbooks/ark
+	url = https://github.com/burtlo/ark.git
