@@ -1,0 +1,6 @@
+[submodule "cookbooks/limits"]
+	path = cookbooks/limits
+	url = https://github.com/jrwesolo/limits
+[submodule "cookbooks/influxdb"]
+	path = cookbooks/influxdb
+	url = https://github.com/zeroXten/influxdb-chef.git

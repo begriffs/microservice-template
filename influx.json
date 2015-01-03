@@ -1,0 +1,25 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-1",
+    "source_ami": "ami-4b6f650e",
+    "instance_type": "t2.micro",
+    "ssh_username": "ec2-user",
+    "ami_name": "InfluxDB {{timestamp}}"
+  }],
+  "provisioners": [
+    {
+      "type": "chef-solo",
+      "cookbook_paths": ["cookbooks"],
+      "run_list": [
+        "recipe[influxdb::default]"
+      ]
+    }
+  ]
+}
