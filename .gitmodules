@@ -43,3 +43,12 @@
 [submodule "cookbooks/ark"]
 	path = cookbooks/ark
 	url = https://github.com/burtlo/ark.git
+[submodule "cookbooks/consul"]
+	path = cookbooks/consul
+	url = https://github.com/johnbellone/consul-cookbook
+[submodule "cookbooks/golang"]
+	path = cookbooks/golang
+	url = https://github.com/NOX73/chef-golang.git
+[submodule "cookbooks/yum-repoforge"]
+	path = cookbooks/yum-repoforge
+	url = https://github.com/opscode-cookbooks/yum-repoforge.git

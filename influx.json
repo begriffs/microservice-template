@@ -15,9 +15,10 @@
   }],
   "provisioners": [{
     "type": "chef-solo",
+    "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[influxdb::default]"
+      "recipe[influxdb::default]", "recipe[consul::default]"
     ]
   }]
 }
