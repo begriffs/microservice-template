@@ -52,3 +52,18 @@
 [submodule "cookbooks/yum-repoforge"]
 	path = cookbooks/yum-repoforge
 	url = https://github.com/opscode-cookbooks/yum-repoforge.git
+[submodule "cookbooks/grafana"]
+	path = cookbooks/grafana
+	url = https://github.com/JonathanTron/chef-grafana.git
+[submodule "cookbooks/nginx"]
+	path = cookbooks/nginx
+	url = https://github.com/miketheman/nginx.git
+[submodule "cookbooks/bluepill"]
+	path = cookbooks/bluepill
+	url = https://github.com/opscode-cookbooks/bluepill.git
+[submodule "cookbooks/rsyslog"]
+	path = cookbooks/rsyslog
+	url = https://github.com/opscode-cookbooks/rsyslog.git
+[submodule "cookbooks/ohai"]
+	path = cookbooks/ohai
+	url = https://github.com/opscode-cookbooks/ohai.git
