@@ -38,7 +38,7 @@ resource "aws_security_group" "public" {
 
 resource "aws_instance" "web" {
   instance_type = "t2.micro"
-  name = "Grafana"
+  key_name = "${var.key_name}"
 
   ami = "${var.grafana-ami}"
   security_groups = ["${aws_security_group.public.name}"]
