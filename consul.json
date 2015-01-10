@@ -11,22 +11,21 @@
     "source_ami": "ami-4b6f650e",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
-    "ami_name": "Grafana {{timestamp}}"
+    "ami_name": "Statsd {{timestamp}}"
   }],
   "provisioners": [{
     "type": "chef-solo",
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[grafana::default]",
       "recipe[consul::default]"
     ],
     "json": {
-      "grafana": {
-        "webserver_listen": "*"
-      },
       "consul": {
-        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+        "service_mode": "cluster",
+        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
+        "retry_on_join": true,
+        "bootstrap_expect": 3
       }
     }
   }]
