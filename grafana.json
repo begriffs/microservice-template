@@ -26,6 +26,8 @@
         "webserver_listen": "*"
       },
       "consul": {
+        "service_mode": "client",
+        "retry_on_join": true,
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
       }
     }
