@@ -2,7 +2,7 @@ variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 variable "grafana-ami" {
-  default = "ami-23c1de66"
+  default = "ami-9bf5eade"
 }
 
 variable "consul-ami" {

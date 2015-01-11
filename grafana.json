@@ -19,7 +19,9 @@
     "cookbook_paths": ["cookbooks"],
     "run_list": [
       "recipe[grafana::default]",
-      "recipe[consul::default]"
+      "recipe[consul::default]",
+      "recipe[dnsmasq::dns]",
+      "recipe[resolver::default]"
     ],
     "json": {
       "grafana": {
@@ -28,8 +30,24 @@
       "consul": {
         "service_mode": "client",
         "retry_on_join": true,
+        "node_name": "grafana",
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+      },
+      "dnsmasq": {
+        "dns": {
+          "server": "/consul/127.0.0.1#8600"
+        }
+      },
+      "resolver": {
+        "search": "us-west-1.compute.internal",
+        "nameservers": ["127.0.0.1", "10.0.0.2"]
       }
     }
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
+      "sudo chattr +i /etc/resolv.conf"
+    ]
   }]
 }

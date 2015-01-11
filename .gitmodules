@@ -67,3 +67,12 @@
 [submodule "cookbooks/ohai"]
 	path = cookbooks/ohai
 	url = https://github.com/opscode-cookbooks/ohai.git
+[submodule "cookbooks/hosts_file"]
+	path = cookbooks/hosts_file
+	url = https://github.com/hw-cookbooks/hosts_file.git
+[submodule "cookbooks/dnsmasq"]
+	path = cookbooks/dnsmasq
+	url = https://github.com/hw-cookbooks/dnsmasq.git
+[submodule "cookbooks/resolver"]
+	path = cookbooks/resolver
+	url = https://github.com/opscode-cookbooks/resolver.git
