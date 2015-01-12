@@ -1,9 +1,6 @@
 [submodule "cookbooks/limits"]
 	path = cookbooks/limits
 	url = https://github.com/jrwesolo/limits
-[submodule "cookbooks/influxdb"]
-	path = cookbooks/influxdb
-	url = https://github.com/zeroXten/influxdb-chef.git
 [submodule "cookbooks/statsd"]
 	path = cookbooks/statsd
 	url = https://github.com/librato/statsd-cookbook.git
@@ -76,3 +73,6 @@
 [submodule "cookbooks/resolver"]
 	path = cookbooks/resolver
 	url = https://github.com/opscode-cookbooks/resolver.git
+[submodule "cookbooks/influxdb"]
+	path = cookbooks/influxdb
+	url = https://github.com/SimpleFinance/chef-influxdb.git
