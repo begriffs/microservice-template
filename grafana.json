@@ -25,7 +25,22 @@
     ],
     "json": {
       "grafana": {
-        "webserver_listen": "*"
+        "webserver_listen": "*",
+        "datasources": {
+          "grafana": {
+            "type": "influxdb",
+            "url": "http://influxdb.node.consul:8086/db/grafana",
+            "username": "grafana",
+            "password": "grafpass",
+            "grafanaDB": true
+          },
+          "vpc-metrics": {
+            "type": "influxdb",
+            "url": "http://influxdb.node.consul:8086/db/metrics",
+            "username": "grafana",
+            "password": "grafpass"
+          }
+        }
       },
       "consul": {
         "service_mode": "client",
