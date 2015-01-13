@@ -2,15 +2,15 @@ variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 variable "grafana-ami" {
-  default = "ami-9bf5eade"
+  default = ""
 }
 
 variable "consul-ami" {
-  default = "ami-e3c2dda6"
+  default = ""
 }
 
 variable "influx-ami" {
-  default = "ami-6f98872a"
+  default = ""
 }
 
 variable "key_name" {
