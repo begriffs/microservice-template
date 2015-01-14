@@ -27,18 +27,18 @@
       "grafana": {
         "webserver_listen": "*",
         "datasources": {
-          "grafana": {
-            "type": "influxdb",
-            "url": "http://influxdb.node.consul:8086/db/grafana",
-            "username": "grafana",
-            "password": "grafpass",
-            "grafanaDB": true
+          "metrics": {
+            "type": "'influxdb'",
+            "url": "window.location.protocol+'//'+window.location.hostname+':8086/db/metrics'",
+            "username": "'grafana'",
+            "password": "'grafpass'"
           },
-          "vpc-metrics": {
-            "type": "influxdb",
-            "url": "http://influxdb.node.consul:8086/db/metrics",
-            "username": "grafana",
-            "password": "grafpass"
+          "grafana": {
+            "type": "'influxdb'",
+            "url": "window.location.protocol+'//'+window.location.hostname+':8086/db/grafana'",
+            "username": "'grafana'",
+            "password": "'grafpass'",
+            "grafanaDB": true
           }
         }
       },
@@ -58,6 +58,15 @@
         "nameservers": ["127.0.0.1", "10.0.0.2"]
       }
     }
+  }, {
+    "type": "file",
+    "source": "nginx/",
+    "destination": "/tmp"
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo cp /tmp/influxdb /etc/nginx/sites-enabled"
+    ]
   }, {
     "type": "shell",
     "inline": [

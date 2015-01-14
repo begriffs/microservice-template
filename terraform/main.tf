@@ -31,6 +31,13 @@ resource "aws_subnet" "consul_cluster" {
   availability_zone = "us-west-1a"
 }
 
+resource "aws_subnet" "private_services" {
+  vpc_id = "${aws_vpc.default.id}"
+
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "us-west-1a"
+}
+
 ### Security groups
 
 resource "aws_security_group" "public" {
@@ -53,6 +60,29 @@ resource "aws_security_group" "public" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  # this port will be forwarded by nginx
+  ingress {
+    from_port = 8086
+    to_port = 8086
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "influxdb" {
+  name = "private"
+  description = "Disallow access outside vpc"
+
+  # api access locally
+  ingress {
+    from_port = 8086
+    to_port = 8086
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  vpc_id = "${aws_vpc.default.id}"
 }
 
 resource "aws_security_group" "consul" {
@@ -137,6 +167,15 @@ resource "aws_instance" "web" {
   ami = "${var.grafana-ami}"
   security_groups = ["${aws_security_group.public.id}", "${aws_security_group.consul.id}"]
   associate_public_ip_address = true
+}
+
+resource "aws_instance" "influxdb" {
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  subnet_id = "${aws_subnet.private_services.id}"
+
+  ami = "${var.influx-ami}"
+  security_groups = ["${aws_security_group.influxdb.id}", "${aws_security_group.consul.id}"]
 }
 
 resource "aws_instance" "consul0" {

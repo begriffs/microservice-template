@@ -1,0 +1,7 @@
+server {
+  listen                *:8086;
+
+  location ~ ^/ {
+    proxy_pass http://influxdb.node.consul:8086;
+  }
+}
