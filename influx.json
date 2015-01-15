@@ -44,10 +44,11 @@
   }, {
     "type": "shell",
     "inline": [
-      "npm install influxdb-cli",
-      "echo 'create admin grafana grafpass' | node_modules/influxdb-cli/influxdb-cli",
-      "echo 'create db grafana' | node_modules/influxdb-cli/influxdb-cli",
-      "echo 'create db metrics' | node_modules/influxdb-cli/influxdb-cli"
+      "sleep 5",
+      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"grafana\"}'",
+      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"metrics\"}'",
+      "curl -X POST 'http://127.0.0.1:8086/db/grafana/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'",
+      "curl -X POST 'http://127.0.0.1:8086/db/metrics/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'"
     ]
   }, {
     "type": "shell",

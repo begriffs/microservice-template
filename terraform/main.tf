@@ -61,10 +61,18 @@ resource "aws_security_group" "public" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # this port will be forwarded by nginx
+  # this port will be forwarded to influx api
   ingress {
     from_port = 8086
     to_port = 8086
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # this port will be forwarded to influx admin panel
+  ingress {
+    from_port = 8080
+    to_port = 8080
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -73,6 +81,7 @@ resource "aws_security_group" "public" {
 resource "aws_security_group" "influxdb" {
   name = "private"
   description = "Disallow access outside vpc"
+  vpc_id = "${aws_vpc.default.id}"
 
   # api access locally
   ingress {
@@ -82,8 +91,45 @@ resource "aws_security_group" "influxdb" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
-  vpc_id = "${aws_vpc.default.id}"
+  # ui access locally
+  ingress {
+    from_port = 8083
+    to_port = 8083
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # SSH access locally
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
 }
+
+resource "aws_security_group" "statsd" {
+  name = "statsd"
+  description = "Open up statsd udp"
+  vpc_id = "${aws_vpc.default.id}"
+
+  # api access locally
+  ingress {
+    from_port = 8125
+    to_port = 8125
+    protocol = "udp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # SSH access locally
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 
 resource "aws_security_group" "consul" {
   name = "consul"
@@ -176,6 +222,15 @@ resource "aws_instance" "influxdb" {
 
   ami = "${var.influx-ami}"
   security_groups = ["${aws_security_group.influxdb.id}", "${aws_security_group.consul.id}"]
+}
+
+resource "aws_instance" "statsd" {
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  subnet_id = "${aws_subnet.private_services.id}"
+
+  ami = "${var.statsd-ami}"
+  security_groups = ["${aws_security_group.statsd.id}", "${aws_security_group.consul.id}"]
 }
 
 resource "aws_instance" "consul0" {

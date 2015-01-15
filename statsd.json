@@ -18,11 +18,41 @@
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[statsd]", "recipe[consul::default]"
+      "recipe[statsd]",
+      "recipe[consul::default]",
+      "recipe[dnsmasq::dns]",
+      "recipe[resolver::default]"
     ],
     "json": {
       "statsd": {
-        "backends": ["statsd-influxdb-backend"]
+        "backends": ["statsd-influxdb-backend"],
+        "graphite_enabled": false,
+        "extra_config": {
+          "influxdb": {
+            "host": "influxdb.node.consul",
+            "database": "metrics",
+            "username": "grafana",
+            "password": "grafpass",
+            "flush": {
+              "enable": true
+            }
+          }
+        }
+      },
+      "consul": {
+        "service_mode": "client",
+        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
+        "retry_on_join": true,
+        "node_name": "statsd"
+      },
+      "dnsmasq": {
+        "dns": {
+          "server": "/consul/127.0.0.1#8600"
+        }
+      },
+      "resolver": {
+        "search": "us-west-1.compute.internal",
+        "nameservers": ["127.0.0.1", "172.31.0.2", "10.0.0.2"]
       }
     }
   }]

@@ -31,7 +31,8 @@
             "type": "'influxdb'",
             "url": "window.location.protocol+'//'+window.location.hostname+':8086/db/metrics'",
             "username": "'grafana'",
-            "password": "'grafpass'"
+            "password": "'grafpass'",
+            "default": true
           },
           "grafana": {
             "type": "'influxdb'",

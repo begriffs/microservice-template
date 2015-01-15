@@ -13,6 +13,10 @@ variable "influx-ami" {
   default = ""
 }
 
+variable "statsd-ami" {
+  default = ""
+}
+
 variable "key_name" {
   description = "Name of the keypair to use in EC2."
   default = "terraform"

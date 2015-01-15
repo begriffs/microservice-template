@@ -1,7 +1,17 @@
+# Proxy InfluxDB API
 server {
-  listen                *:8086;
+  listen *:8086;
 
-  location ~ ^/ {
+  location ~ / {
     proxy_pass http://influxdb.node.consul:8086;
+  }
+}
+
+# Proxy InfluxDB UI
+server {
+  listen *:8080;
+
+  location ~ / {
+    proxy_pass http://influxdb.node.consul:8083;
   }
 }
