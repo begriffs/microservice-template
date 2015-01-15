@@ -20,6 +20,7 @@
     "run_list": [
       "recipe[grafana::default]",
       "recipe[consul::default]",
+      "recipe[consul::ui]",
       "recipe[dnsmasq::dns]",
       "recipe[resolver::default]"
     ],
@@ -47,7 +48,8 @@
         "service_mode": "client",
         "retry_on_join": true,
         "node_name": "grafana",
-        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
+        "serve_ui": true
       },
       "dnsmasq": {
         "dns": {

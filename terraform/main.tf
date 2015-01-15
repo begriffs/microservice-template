@@ -76,6 +76,14 @@ resource "aws_security_group" "public" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  # allow consul ui access
+  ingress {
+    from_port = 8500
+    to_port = 8500
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "influxdb" {
@@ -148,42 +156,36 @@ resource "aws_security_group" "consul" {
     from_port = 53
     to_port = 53
     protocol = "tcp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
   ingress {
     from_port = 53
     to_port = 53
     protocol = "udp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
   ingress {
     from_port = 8300
     to_port = 8302
     protocol = "tcp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
   ingress {
     from_port = 8301
     to_port = 8302
     protocol = "udp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
   ingress {
     from_port = 8400
     to_port = 8400
     protocol = "tcp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
   ingress {
     from_port = 8500
     to_port = 8500
     protocol = "tcp"
-    self = true
     cidr_blocks = ["10.0.0.0/16"]
   }
 }
