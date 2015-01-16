@@ -63,7 +63,7 @@
     }
   }, {
     "type": "file",
-    "source": "nginx/",
+    "source": "sources/influxdb",
     "destination": "/tmp"
   }, {
     "type": "shell",

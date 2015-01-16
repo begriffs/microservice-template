@@ -55,5 +55,16 @@
         "nameservers": ["127.0.0.1", "172.31.0.2", "10.0.0.2"]
       }
     }
+  }, {
+    "type": "file",
+    "source": "sources/statsd.init",
+    "destination": "/tmp/statsd.init"
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo cp /tmp/statsd.init /etc/init.d/statsd",
+      "sudo chmod 0755 /etc/init.d/statsd",
+      "sudo chkconfig --add statsd"
+    ]
   }]
 }
