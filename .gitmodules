@@ -49,9 +49,6 @@
 [submodule "cookbooks/yum-repoforge"]
 	path = cookbooks/yum-repoforge
 	url = https://github.com/opscode-cookbooks/yum-repoforge.git
-[submodule "cookbooks/grafana"]
-	path = cookbooks/grafana
-	url = https://github.com/JonathanTron/chef-grafana.git
 [submodule "cookbooks/nginx"]
 	path = cookbooks/nginx
 	url = https://github.com/miketheman/nginx.git
@@ -76,3 +73,6 @@
 [submodule "cookbooks/influxdb"]
 	path = cookbooks/influxdb
 	url = https://github.com/SimpleFinance/chef-influxdb.git
+[submodule "cookbooks/grafana"]
+	path = cookbooks/grafana
+	url = https://github.com/begriffs/chef-grafana.git

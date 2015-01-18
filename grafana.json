@@ -27,6 +27,8 @@
     "json": {
       "grafana": {
         "webserver_listen": "*",
+        "es_role": null,
+        "graphite_role": null,
         "datasources": {
           "metrics": {
             "type": "'influxdb'",
@@ -64,7 +66,7 @@
   }, {
     "type": "file",
     "source": "sources/influxdb",
-    "destination": "/tmp"
+    "destination": "/tmp/influxdb"
   }, {
     "type": "shell",
     "inline": [
