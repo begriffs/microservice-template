@@ -66,5 +66,11 @@
       "sudo chmod 0755 /etc/init.d/statsd",
       "sudo chkconfig --add statsd"
     ]
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
+      "sudo chattr +i /etc/resolv.conf"
+    ]
   }]
 }
