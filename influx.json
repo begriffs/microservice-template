@@ -9,7 +9,7 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-west-1",
-    "source_ami": "{{user `base_ami`}}",
+    "source_ami": "ami-4b6f650e",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
     "ami_name": "InfluxDB {{timestamp}}"
@@ -21,6 +21,8 @@
     "run_list": [
       "recipe[influxdb::default]",
       "recipe[consul::default]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]",
       "recipe[dnsmasq::dns]",
       "recipe[resolver::default]"
     ],
@@ -30,6 +32,34 @@
         "retry_on_join": true,
         "node_name": "influxdb",
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "collectd.influxdb."
+            }
+          }
+        }
       },
       "dnsmasq": {
         "dns": {

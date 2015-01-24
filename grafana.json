@@ -21,6 +21,8 @@
       "recipe[grafana::default]",
       "recipe[consul::default]",
       "recipe[consul::ui]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]",
       "recipe[dnsmasq::dns]",
       "recipe[resolver::default]"
     ],
@@ -52,6 +54,34 @@
         "node_name": "grafana",
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
         "serve_ui": true
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "collectd.grafana."
+            }
+          }
+        }
       },
       "dnsmasq": {
         "dns": {
