@@ -3,7 +3,9 @@ server {
   listen *:8086;
 
   location ~ / {
-    proxy_pass http://influxdb.node.consul:8086;
+    resolver 127.0.0.1;
+    set $api "http://influxdb.node.consul:8086";
+    proxy_pass $api;
   }
 }
 
@@ -12,6 +14,8 @@ server {
   listen *:8080;
 
   location ~ / {
-    proxy_pass http://influxdb.node.consul:8083;
+    resolver 127.0.0.1;
+    set $admin "http://influxdb.node.consul:8083";
+    proxy_pass $admin;
   }
 }
