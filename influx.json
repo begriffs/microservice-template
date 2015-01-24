@@ -1,14 +1,15 @@
 {
   "variables": {
     "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_secret_key": "",
+    "base_ami": ""
   },
   "builders": [{
     "type": "amazon-ebs",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-west-1",
-    "source_ami": "ami-4b6f650e",
+    "source_ami": "{{user `base_ami`}}",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
     "ami_name": "InfluxDB {{timestamp}}"
@@ -19,7 +20,6 @@
     "cookbook_paths": ["cookbooks"],
     "run_list": [
       "recipe[influxdb::default]",
-      "recipe[nodejs::default]",
       "recipe[consul::default]",
       "recipe[dnsmasq::dns]",
       "recipe[resolver::default]"
@@ -51,8 +51,14 @@
       "curl -X POST 'http://127.0.0.1:8086/db/metrics/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'"
     ]
   }, {
+    "type": "file",
+    "source": "sources/influxdb.toml",
+    "destination": "/tmp/config.toml"
+  }, {
     "type": "shell",
     "inline": [
+      "sudo cp /tmp/config.toml /opt/influxdb/shared/config.toml",
+      "sudo chown influxdb:influxdb /opt/influxdb/shared/config.toml",
       "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
       "sudo chattr +i /etc/resolv.conf"
     ]

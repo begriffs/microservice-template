@@ -107,6 +107,22 @@ resource "aws_security_group" "influxdb" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
+  # take input from collectd
+  ingress {
+    from_port = 25826
+    to_port = 25826
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # impersonate graphite
+  ingress {
+    from_port = 2003
+    to_port = 2003
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
   # SSH access locally
   ingress {
     from_port = 22

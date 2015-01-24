@@ -76,3 +76,6 @@
 [submodule "cookbooks/grafana"]
 	path = cookbooks/grafana
 	url = https://github.com/begriffs/chef-grafana.git
+[submodule "cookbooks/squaresurf_influxdb"]
+	path = cookbooks/squaresurf_influxdb
+	url = https://github.com/squaresurf/squaresurf_influxdb.git
