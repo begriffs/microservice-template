@@ -20,6 +20,8 @@
     "run_list": [
       "recipe[statsd]",
       "recipe[consul::default]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]",
       "recipe[dnsmasq::dns]",
       "recipe[resolver::default]"
     ],
@@ -44,6 +46,34 @@
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
         "retry_on_join": true,
         "node_name": "statsd"
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "collectd.statsd."
+            }
+          }
+        }
       },
       "dnsmasq": {
         "dns": {

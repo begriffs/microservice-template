@@ -18,7 +18,9 @@
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[consul::default]"
+      "recipe[consul::default]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]"
     ],
     "json": {
       "consul": {
@@ -26,6 +28,34 @@
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"],
         "retry_on_join": true,
         "bootstrap_expect": 3
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "collectd.consul."
+            }
+          }
+        }
       }
     }
   }]
