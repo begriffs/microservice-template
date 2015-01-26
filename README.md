@@ -10,19 +10,30 @@ The scalable monitored template for cluster infrastructure.
 
 #### Installation
 
-1. Create Amazon IAM credentials for deployment.**
+1. Sign up for Amazon Web Services free tier [here](http://aws.amazon.com/free/)
+2. Create Amazon IAM credentials for deployment.
     Assuming you are signed into the AWS console, visit the [user
     admin](https://console.aws.amazon.com/iam/home#users) page. Create
     a new user and note their security credentials (ID and secret key).
     Then attach a user policy of "Power User" to the newly created user.
 
-2. Clone this repo including its chef recipe submodules.
+3. Clone this repo including its chef recipe submodules.
     ```bash
     git clone --recursive https://github.com/begriffs/microservice-template.git
+
+    # if you've already cloned the repo you can do: git submodule update --init
     ```
 
-3. Install [Packer](https://www.packer.io/) and [Terraform](https://www.terraform.io/)
-4. Create machine images (AMI) using your credentials.
+4. Install <a href="https://www.packer.io/" target="_blank">Packer</a> and
+    <a href="https://www.terraform.io/" target="_blank">Terraform</a>. On a
+    Mac you can install them with homebrew:
+    ```bash
+    brew tap homebrew/binary
+    brew install packer
+    brew install terraform
+    ```
+
+5. Create machine images (AMI) using your credentials.
     When running each of these commands take note of the AMI ids each
     one generates. They will be of the form `ami-[hash]`.
 
@@ -33,10 +44,17 @@ The scalable monitored template for cluster infrastructure.
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' grafana.json
     ```
 
-5. Deploy machine images.
+6. Deploy machine images.
     Edit `terraform/vars.tf` and fill in the ami instances created by
-    the previous steps. Then go into the terraform directory and run
-    `make`.
+    the previous steps. Leave the `aws` keys blank.
+
+    Copy the Terraform variables example to a file without the `.example`
+    and fill it in.
+    ```bash
+    cp terraform/terraform.tfvars{.example,}
+    ```
+
+    Now the fun part. Go into the terraform directory and run `make`.
 
     At the end it will output the public IP address of the monitoring
     server for the cluster. You can use it to watch server health and
