@@ -34,8 +34,9 @@ The scalable monitored template for cluster infrastructure.
     ```
 
 5. Create machine images (AMI) using your credentials.
-    When running each of these commands take note of the AMI ids each
-    one generates. They will be of the form `ami-[hash]`.
+    When running each of these commands **write down** the AMI ids
+    each one generates. They will be of the form `ami-[hash]`. You
+    will need to remember which command created which AMI.
 
     ```bash
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' consul.json
