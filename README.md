@@ -11,6 +11,9 @@ The scalable monitored template for cluster infrastructure.
 #### Installation
 
 1. Sign up for Amazon Web Services free tier [here](http://aws.amazon.com/free/)
+    **Extremely important**: ensure the region in your Amazon Web
+    Console is set to "N. California" or future steps will fail
+    mysteriously.
 2. Create Amazon IAM credentials for deployment.
     Assuming you are signed into the AWS console, visit the [user
     admin](https://console.aws.amazon.com/iam/home#users) page. Create
