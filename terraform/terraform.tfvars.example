@@ -1,2 +1,12 @@
 aws_access_key = ""
 aws_secret_key = ""
+
+region=""
+availability_zone=""
+
+consul_ami = ""
+statsd_ami = ""
+grafana_ami = ""
+influx_ami = ""
+
+key_name=""

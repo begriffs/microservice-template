@@ -1,23 +1,20 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
-variable "grafana-ami" {
-  default = ""
+variable "region" {
+  default="us-west-1"
 }
 
-variable "consul-ami" {
-  default = ""
+variable "availability_zone" {
+  default="us-west-1a"
 }
 
-variable "influx-ami" {
-  default = ""
-}
-
-variable "statsd-ami" {
-  default = ""
-}
+variable "grafana_ami" {}
+variable "consul_ami" {}
+variable "influx_ami" {}
+variable "statsd_ami" {}
 
 variable "key_name" {
   description = "Name of the keypair to use in EC2."
-  default = "terraform"
+  default = ""
 }

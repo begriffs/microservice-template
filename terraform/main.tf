@@ -1,7 +1,7 @@
 ### General
 
 provider "aws" {
-  region = "us-west-1"
+  region = "${var.region}"
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
 }
@@ -20,7 +20,7 @@ resource "aws_subnet" "public" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.0.0/24"
-  availability_zone = "us-west-1a"
+  availability_zone = "${var.availability_zone}"
   map_public_ip_on_launch = true
 }
 
@@ -28,14 +28,14 @@ resource "aws_subnet" "consul_cluster" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.1.0/24"
-  availability_zone = "us-west-1a"
+  availability_zone = "${var.availability_zone}"
 }
 
 resource "aws_subnet" "private_services" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.2.0/24"
-  availability_zone = "us-west-1a"
+  availability_zone = "${var.availability_zone}"
 }
 
 ### Security groups
@@ -228,7 +228,7 @@ resource "aws_instance" "web" {
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.public.id}"
 
-  ami = "${var.grafana-ami}"
+  ami = "${var.grafana_ami}"
   security_groups = ["${aws_security_group.public.id}", "${aws_security_group.consul.id}"]
   associate_public_ip_address = true
 }
@@ -238,7 +238,7 @@ resource "aws_instance" "influxdb" {
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.private_services.id}"
 
-  ami = "${var.influx-ami}"
+  ami = "${var.influx_ami}"
   security_groups = ["${aws_security_group.influxdb.id}", "${aws_security_group.consul.id}"]
 }
 
@@ -247,7 +247,7 @@ resource "aws_instance" "statsd" {
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.private_services.id}"
 
-  ami = "${var.statsd-ami}"
+  ami = "${var.statsd_ami}"
   security_groups = ["${aws_security_group.statsd.id}", "${aws_security_group.consul.id}"]
 }
 
@@ -257,7 +257,7 @@ resource "aws_instance" "consul0" {
   subnet_id = "${aws_subnet.consul_cluster.id}"
   private_ip = "10.0.1.100"
 
-  ami = "${var.consul-ami}"
+  ami = "${var.consul_ami}"
   security_groups = ["${aws_security_group.consul.id}"]
 }
 resource "aws_instance" "consul1" {
@@ -266,7 +266,7 @@ resource "aws_instance" "consul1" {
   subnet_id = "${aws_subnet.consul_cluster.id}"
   private_ip = "10.0.1.101"
 
-  ami = "${var.consul-ami}"
+  ami = "${var.consul_ami}"
   security_groups = ["${aws_security_group.consul.id}"]
 }
 resource "aws_instance" "consul2" {
@@ -275,6 +275,6 @@ resource "aws_instance" "consul2" {
   subnet_id = "${aws_subnet.consul_cluster.id}"
   private_ip = "10.0.1.102"
 
-  ami = "${var.consul-ami}"
+  ami = "${var.consul_ami}"
   security_groups = ["${aws_security_group.consul.id}"]
 }
