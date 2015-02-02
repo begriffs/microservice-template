@@ -79,3 +79,9 @@
 [submodule "cookbooks/java"]
 	path = cookbooks/java
 	url = https://github.com/agileorbit-cookbooks/java.git
+[submodule "cookbooks/kafka"]
+	path = cookbooks/kafka
+	url = https://github.com/mthssdrbrg/kafka-cookbook.git
+[submodule "cookbooks/builder"]
+	path = cookbooks/builder
+	url = https://github.com/hw-cookbooks/builder.git

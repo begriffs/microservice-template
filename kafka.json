@@ -1,0 +1,86 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "base_ami": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-1",
+    "source_ami": "ami-4b6f650e",
+    "instance_type": "t2.micro",
+    "ssh_username": "ec2-user",
+    "ami_name": "Kafka {{timestamp}}"
+  }],
+  "provisioners": [{
+    "type": "chef-solo",
+    "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
+    "cookbook_paths": ["cookbooks"],
+    "run_list": [
+      "recipe[java::default]",
+      "recipe[kafka::default]",
+      "recipe[consul::default]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]",
+      "recipe[dnsmasq::dns]",
+      "recipe[resolver::default]"
+    ],
+    "json": {
+      "kafka": {
+        "broker": {
+          "zookeeper_connect": ["parkeeper.node.consul:2181"],
+          "zookeeper_connection_timeout_ms": 15000
+        },
+        "automatic_start": true
+      },
+      "consul": {
+        "service_mode": "client",
+        "retry_on_join": true,
+        "node_name": "kafka",
+        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "collectd.kafka."
+            }
+          }
+        }
+      },
+      "dnsmasq": {
+        "dns": {
+          "server": "/consul/127.0.0.1#8600"
+        }
+      },
+      "resolver": {
+        "search": "us-west-1.compute.internal",
+        "nameservers": ["127.0.0.1", "172.31.0.2", "10.0.0.2"]
+      }
+    }
+  }, {
+    "type": "shell",
+    "inline": [ "sudo chkconfig --add kafka" ]
+  }]
+}
