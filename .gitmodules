@@ -76,3 +76,12 @@
 [submodule "cookbooks/influxdb"]
 	path = cookbooks/influxdb
 	url = https://github.com/zeroXten/influxdb-chef.git
+[submodule "cookbooks/java"]
+	path = cookbooks/java
+	url = https://github.com/agileorbit-cookbooks/java.git
+[submodule "cookbooks/kafka"]
+	path = cookbooks/kafka
+	url = https://github.com/cerner/cerner_kafka.git
+[submodule "cookbooks/ulimit"]
+	path = cookbooks/ulimit
+	url = https://github.com/bmhatfield/chef-ulimit.git

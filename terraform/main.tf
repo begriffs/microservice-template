@@ -154,6 +154,27 @@ resource "aws_security_group" "statsd" {
   }
 }
 
+resource "aws_security_group" "parkeeper" {
+  name = "parkeeper"
+  description = "Open up traditional zookeper ports"
+  vpc_id = "${aws_vpc.default.id}"
+
+  # api access locally
+  ingress {
+    from_port = 2181
+    to_port = 2181
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # SSH access locally
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+}
 
 resource "aws_security_group" "consul" {
   name = "consul"
@@ -249,6 +270,15 @@ resource "aws_instance" "statsd" {
 
   ami = "${var.statsd-ami}"
   security_groups = ["${aws_security_group.statsd.id}", "${aws_security_group.consul.id}"]
+}
+
+resource "aws_instance" "parkeeper" {
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  subnet_id = "${aws_subnet.private_services.id}"
+
+  ami = "${var.parkeeper-ami}"
+  security_groups = ["${aws_security_group.parkeeper.id}", "${aws_security_group.consul.id}"]
 }
 
 resource "aws_instance" "consul0" {
