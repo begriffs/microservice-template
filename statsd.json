@@ -101,7 +101,7 @@
       "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
       "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
       "sudo cp /tmp/network /etc/sysconfig/network",
-      "sudo sh -c 'echo \"127.0.0.1 self\" >> /etc/hosts'"
+      "sudo sh -c 'echo \"127.0.0.1 self self.localdomain\" >> /etc/hosts'"
     ]
   }]
 }
