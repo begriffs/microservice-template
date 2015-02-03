@@ -80,6 +80,10 @@
       }
     }
   }, {
+    "type": "file",
+    "source": "sources/network",
+    "destination": "/tmp/network"
+  }, {
     "type": "shell",
     "inline": [ "sudo chkconfig --add kafka" ]
   }]

@@ -24,8 +24,7 @@
       "recipe[consul::default]",
       "recipe[collectd]",
       "recipe[collectd::attribute_driven]",
-      "recipe[dnsmasq::dns]",
-      "recipe[resolver::default]"
+      "recipe[dnsmasq::dns]"
     ],
     "json": {
       "go": {
@@ -71,10 +70,6 @@
         "dns": {
           "server": "/consul/127.0.0.1#8600"
         }
-      },
-      "resolver": {
-        "search": "us-west-1.compute.internal",
-        "nameservers": ["127.0.0.1", "172.31.0.2", "10.0.0.2"]
       }
     }
   }, {
@@ -82,12 +77,20 @@
     "source": "sources/parkeeper.init",
     "destination": "/tmp/parkeeper.init"
   }, {
+    "type": "file",
+    "source": "sources/network",
+    "destination": "/tmp/network"
+  }, {
     "type": "shell",
     "inline": [
       "sudo cp /tmp/parkeeper.init /etc/init.d/parkeeper",
       "sudo chmod 0755 /etc/init.d/parkeeper",
       "sudo mkdir /var/run/parkeeper",
-      "sudo chkconfig --add parkeeper"
+      "sudo chkconfig --add parkeeper",
+      "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
+      "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
+      "sudo cp /tmp/network /etc/sysconfig/network",
+      "sudo sh -c 'echo \"127.0.0.1 self\" >> /etc/hosts'"
     ]
   }]
 }

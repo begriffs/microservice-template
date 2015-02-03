@@ -67,9 +67,6 @@
 [submodule "cookbooks/dnsmasq"]
 	path = cookbooks/dnsmasq
 	url = https://github.com/hw-cookbooks/dnsmasq.git
-[submodule "cookbooks/resolver"]
-	path = cookbooks/resolver
-	url = https://github.com/opscode-cookbooks/resolver.git
 [submodule "cookbooks/grafana"]
 	path = cookbooks/grafana
 	url = https://github.com/begriffs/chef-grafana.git
