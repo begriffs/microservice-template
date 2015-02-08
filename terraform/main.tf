@@ -31,13 +31,6 @@ resource "aws_subnet" "consul_cluster" {
   availability_zone = "us-west-1a"
 }
 
-resource "aws_subnet" "kafka_cluster" {
-  vpc_id = "${aws_vpc.default.id}"
-
-  cidr_block = "10.0.3.0/24"
-  availability_zone = "us-west-1a"
-}
-
 resource "aws_subnet" "private_services" {
   vpc_id = "${aws_vpc.default.id}"
 
@@ -139,28 +132,6 @@ resource "aws_security_group" "influxdb" {
   }
 }
 
-resource "aws_security_group" "kafka" {
-  name = "kafka"
-  description = "Open up kafka communication"
-  vpc_id = "${aws_vpc.default.id}"
-
-  # api access locally
-  ingress {
-    from_port = 6667
-    to_port = 6667
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
-  # SSH access locally
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-}
-
 resource "aws_security_group" "statsd" {
   name = "statsd"
   description = "Open up statsd udp"
@@ -192,28 +163,6 @@ resource "aws_security_group" "rabbitmq" {
     from_port = 5672
     to_port = 5672
     protocol = "udp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
-  # SSH access locally
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-}
-
-resource "aws_security_group" "parkeeper" {
-  name = "parkeeper"
-  description = "Open up traditional zookeper ports"
-  vpc_id = "${aws_vpc.default.id}"
-
-  # api access locally
-  ingress {
-    from_port = 2181
-    to_port = 2181
-    protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
 
@@ -331,15 +280,6 @@ resource "aws_instance" "rabbitmq" {
   security_groups = ["${aws_security_group.rabbitmq.id}", "${aws_security_group.consul.id}"]
 }
 
-resource "aws_instance" "parkeeper" {
-  instance_type = "t2.micro"
-  key_name = "${var.key_name}"
-  subnet_id = "${aws_subnet.private_services.id}"
-
-  ami = "${var.parkeeper-ami}"
-  security_groups = ["${aws_security_group.parkeeper.id}", "${aws_security_group.consul.id}"]
-}
-
 resource "aws_instance" "consul0" {
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
@@ -366,14 +306,4 @@ resource "aws_instance" "consul2" {
 
   ami = "${var.consul-ami}"
   security_groups = ["${aws_security_group.consul.id}"]
-}
-
-
-resource "aws_instance" "kafka" {
-  instance_type = "t2.micro"
-  key_name = "${var.key_name}"
-  subnet_id = "${aws_subnet.kafka_cluster.id}"
-
-  ami = "${var.kafka-ami}"
-  security_groups = ["${aws_security_group.kafka.id}", "${aws_security_group.consul.id}"]
 }
