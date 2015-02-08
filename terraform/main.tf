@@ -183,6 +183,27 @@ resource "aws_security_group" "statsd" {
   }
 }
 
+resource "aws_security_group" "rabbitmq" {
+  name = "rabbitmq"
+  description = "Open up rabbitmq server"
+  vpc_id = "${aws_vpc.default.id}"
+
+  ingress {
+    from_port = 5672
+    to_port = 5672
+    protocol = "udp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # SSH access locally
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+}
+
 resource "aws_security_group" "parkeeper" {
   name = "parkeeper"
   description = "Open up traditional zookeper ports"
@@ -299,6 +320,15 @@ resource "aws_instance" "statsd" {
 
   ami = "${var.statsd-ami}"
   security_groups = ["${aws_security_group.statsd.id}", "${aws_security_group.consul.id}"]
+}
+
+resource "aws_instance" "rabbitmq" {
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  subnet_id = "${aws_subnet.private_services.id}"
+
+  ami = "${var.rabbitmq-ami}"
+  security_groups = ["${aws_security_group.rabbitmq.id}", "${aws_security_group.consul.id}"]
 }
 
 resource "aws_instance" "parkeeper" {

@@ -17,11 +17,7 @@ variable "statsd-ami" {
   default = ""
 }
 
-variable "parkeeper-ami" {
-  default = ""
-}
-
-variable "kafka-ami" {
+variable "rabbitmq-ami" {
   default = ""
 }
 

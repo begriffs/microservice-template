@@ -85,3 +85,12 @@
 [submodule "cookbooks/ulimit"]
 	path = cookbooks/ulimit
 	url = https://github.com/bmhatfield/chef-ulimit.git
+[submodule "cookbooks/rabbitmq"]
+	path = cookbooks/rabbitmq
+	url = https://github.com/jjasghar/rabbitmq.git
+[submodule "cookbooks/erlang"]
+	path = cookbooks/erlang
+	url = https://github.com/opscode-cookbooks/erlang.git
+[submodule "cookbooks/yum-erlang_solutions"]
+	path = cookbooks/yum-erlang_solutions
+	url = https://github.com/chef-cookbooks/yum-erlang_solutions.git
