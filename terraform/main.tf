@@ -159,10 +159,11 @@ resource "aws_security_group" "rabbitmq" {
   description = "Open up rabbitmq server"
   vpc_id = "${aws_vpc.default.id}"
 
+  # ampq
   ingress {
     from_port = 5672
     to_port = 5672
-    protocol = "udp"
+    protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
 

@@ -90,7 +90,7 @@
     }
   }, {
     "type": "file",
-    "source": "sources/influxdb",
+    "source": "sources/influxdb-nginx",
     "destination": "/tmp/influxdb"
   }, {
     "type": "shell",
