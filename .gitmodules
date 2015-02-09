@@ -94,3 +94,9 @@
 [submodule "cookbooks/yum-erlang_solutions"]
 	path = cookbooks/yum-erlang_solutions
 	url = https://github.com/chef-cookbooks/yum-erlang_solutions.git
+[submodule "sources/collectd-rabbitmq"]
+	path = sources/collectd-rabbitmq
+	url = https://github.com/NYTimes/collectd-rabbitmq.git
+[submodule "cookbooks/python"]
+	path = cookbooks/python
+	url = https://github.com/poise/python.git

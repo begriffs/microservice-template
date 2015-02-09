@@ -20,13 +20,19 @@
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[rabbitmq::default]",
-      "recipe[consul::default]",
       "recipe[collectd]",
       "recipe[collectd::attribute_driven]",
+      "recipe[python]",
+      "recipe[rabbitmq]",
+      "recipe[rabbitmq::mgmt_console]",
+      "recipe[consul]",
       "recipe[dnsmasq::dns]"
     ],
     "json": {
+      "rabbitmq": {
+        "enabled_plugins": ["rabbitmq_management"],
+        "loopback_users": []
+      },
       "consul": {
         "service_mode": "client",
         "retry_on_join": true,
@@ -54,6 +60,7 @@
               "IgnoreSelected": true
             }
           },
+          "python": { },
           "write_graphite": {
             "config": {
               "Prefix": "collectd.rabbitmq."
@@ -72,8 +79,24 @@
     "source": "sources/network",
     "destination": "/tmp/network"
   }, {
+    "type": "file",
+    "source": "sources/collectd-rabbitmq/config/types.db.custom",
+    "destination": "/tmp/rabbitmq.types.db"
+  }, {
+    "type": "file",
+    "source": "sources/collectd-rabbitmq/rabbitmq.py",
+    "destination": "/tmp/rabbitmq.py"
+  }, {
+    "type": "file",
+    "source": "sources/rabbitmq.conf",
+    "destination": "/tmp/rabbitmq.conf"
+  }, {
     "type": "shell",
     "inline": [
+      "sudo chkconfig --add rabbitmq-server",
+      "sudo sh -c 'cat /tmp/rabbitmq.types.db.custom >> /opt/collectd/share/collectd/rabbitmq.types.db'",
+      "sudo sh -c 'cp /tmp/rabbitmq.py /opt/collectd/lib/collectd/rabbitmq.py'",
+      "sudo sh -c 'cp /tmp/rabbitmq.conf /opt/collectd/etc/conf.d/rabbitmq.conf'",
       "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
       "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
       "sudo cp /tmp/network /etc/sysconfig/network",

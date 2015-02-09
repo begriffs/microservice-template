@@ -93,9 +93,14 @@
     "source": "sources/influxdb-nginx",
     "destination": "/tmp/influxdb"
   }, {
+    "type": "file",
+    "source": "sources/rabbitmq-nginx",
+    "destination": "/tmp/rabbitmq"
+  }, {
     "type": "shell",
     "inline": [
-      "sudo cp /tmp/influxdb /etc/nginx/sites-enabled"
+      "sudo cp /tmp/influxdb /etc/nginx/sites-enabled",
+      "sudo cp /tmp/rabbitmq /etc/nginx/sites-enabled"
     ]
   }, {
     "type": "file",

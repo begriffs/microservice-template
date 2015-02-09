@@ -84,6 +84,14 @@ resource "aws_security_group" "public" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  # rabbitmq management console
+  ingress {
+    from_port = 15672
+    to_port = 15672
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "influxdb" {
@@ -163,6 +171,14 @@ resource "aws_security_group" "rabbitmq" {
   ingress {
     from_port = 5672
     to_port = 5672
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # management console
+  ingress {
+    from_port = 15672
+    to_port = 15672
     protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }

@@ -68,17 +68,19 @@ The scalable monitored template for cluster infrastructure.
 
 The server exposes web interfaces for several services.
 
-Port | Service
----- | -------------------------------------
-80   | [Grafana](http://grafana.org/) charts
-8500 | Consul server status and key/vals
-8080 | InfluxDB admin panel
-8086 | InfluxDB API used by Grafana
+Port  | Service
+----- | -------------------------------------
+80    | [Grafana](http://grafana.org/) charts
+8500  | Consul server status and key/vals
+8080  | InfluxDB admin panel
+8086  | InfluxDB API used by Grafana
+15672 | RabbitMQ management console
 
 Influx has been configured with two databases, `metrics` and
 `grafana`. Cluster data accumulates in the former and Grafana stores
 your chart settings in the latter. The Influx user `grafana` (password
-`grafpass`) has full access to both tables.
+`grafpass`) has full access to both tables. RabbitMQ is set up with
+user `guest` password `guest`.
 
 #### Collecting more stats
 
