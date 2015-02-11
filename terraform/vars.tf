@@ -21,6 +21,10 @@ variable "rabbitmq-ami" {
   default = ""
 }
 
+variable "halcyon-ami" {
+  default = ""
+}
+
 variable "key_name" {
   description = "Name of the keypair to use in EC2."
   default = "terraform"

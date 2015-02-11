@@ -130,14 +130,6 @@ resource "aws_security_group" "influxdb" {
     protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
-
-  # SSH access locally
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
 }
 
 resource "aws_security_group" "statsd" {
@@ -150,14 +142,6 @@ resource "aws_security_group" "statsd" {
     from_port = 8125
     to_port = 8125
     protocol = "udp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
-  # SSH access locally
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
 }
@@ -182,28 +166,12 @@ resource "aws_security_group" "rabbitmq" {
     protocol = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
-
-  # SSH access locally
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
 }
 
 resource "aws_security_group" "consul" {
   name = "consul"
   description = "Consul internal traffic + maintenance."
   vpc_id = "${aws_vpc.default.id}"
-
-  # SSH access from anywhere
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
 
   ingress {
     from_port = 53
@@ -243,6 +211,19 @@ resource "aws_security_group" "consul" {
   }
 }
 
+resource "aws_security_group" "ssh" {
+  name = "ssh"
+  description = "Local ssh access"
+  vpc_id = "${aws_vpc.default.id}"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+}
+
 ### Routers
 
 resource "aws_route_table" "public" {
@@ -276,7 +257,9 @@ resource "aws_instance" "influxdb" {
   subnet_id = "${aws_subnet.private_services.id}"
 
   ami = "${var.influx-ami}"
-  security_groups = ["${aws_security_group.influxdb.id}", "${aws_security_group.consul.id}"]
+  security_groups = ["${aws_security_group.influxdb.id}",
+                     "${aws_security_group.consul.id}",
+                     "${aws_security_group.ssh.id}"]
 }
 
 resource "aws_instance" "statsd" {
@@ -294,7 +277,18 @@ resource "aws_instance" "rabbitmq" {
   subnet_id = "${aws_subnet.private_services.id}"
 
   ami = "${var.rabbitmq-ami}"
-  security_groups = ["${aws_security_group.rabbitmq.id}", "${aws_security_group.consul.id}"]
+  security_groups = ["${aws_security_group.rabbitmq.id}",
+                     "${aws_security_group.consul.id}",
+                     "${aws_security_group.ssh.id}"]
+}
+
+resource "aws_instance" "halcyon" {
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  subnet_id = "${aws_subnet.public.id}"
+
+  ami = "${var.halcyon-ami}"
+  security_groups = ["${aws_security_group.ssh.id}"]
 }
 
 resource "aws_instance" "consul0" {

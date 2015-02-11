@@ -1,0 +1,91 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "broker_id": "",
+    "base_ami": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-1",
+    "source_ami": "ami-4b6f650e",
+    "instance_type": "t2.micro",
+    "ssh_username": "ec2-user",
+    "ami_name": "Halcyon {{timestamp}}"
+  }],
+  "provisioners": [{
+    "type": "chef-solo",
+    "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
+    "cookbook_paths": ["cookbooks"],
+    "run_list": [
+      "recipe[git]",
+      "recipe[zlib]",
+      "recipe[consul]",
+      "recipe[collectd]",
+      "recipe[collectd::attribute_driven]",
+      "recipe[dnsmasq::dns]"
+    ],
+    "json": {
+      "consul": {
+        "service_mode": "client",
+        "retry_on_join": true,
+        "node_name": "worker",
+        "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
+      },
+      "collectd": {
+        "url": "https://s3.amazonaws.com/collectd-5.4.1/collectd-5.4.1.tar.gz",
+        "graphite_ipaddress": "influxdb.node.consul",
+        "plugins": {
+          "syslog": {
+            "config": { "LogLevel": "Info" }
+          },
+          "disk": { },
+          "swap": { },
+          "memory": { },
+          "cpu": { },
+          "interface": {
+            "config": { "Interface": "lo", "IgnoreSelected": true }
+          },
+          "df": {
+            "config": {
+              "ReportReserved": false,
+              "FSType": [ "proc", "sysfs", "fusectl", "debugfs", "devtmpfs", "devpts", "tmpfs" ],
+              "IgnoreSelected": true
+            }
+          },
+          "write_graphite": {
+            "config": {
+              "Prefix": "worker.kafka."
+            }
+          }
+        }
+      },
+      "dnsmasq": {
+        "dns": {
+          "server": "/consul/127.0.0.1#8600"
+        }
+      }
+    }
+  }, {
+    "type": "file",
+    "source": "sources/network",
+    "destination": "/tmp/network"
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
+      "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
+      "sudo cp /tmp/network /etc/sysconfig/network",
+      "sudo sh -c 'echo \"127.0.0.1 self self.localdomain\" >> /etc/hosts'"
+    ]
+  }, {
+    "type": "shell",
+    "inline": [
+      "sudo mkdir -p /app /opt/halcyon",
+      "sudo git clone https://github.com/mietek/halcyon /opt/halcyon",
+      "echo 'source <( opt/halcyon paths )' >> ~/.bash_profile"
+    ]
+  }]
+}

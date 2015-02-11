@@ -100,3 +100,6 @@
 [submodule "cookbooks/python"]
 	path = cookbooks/python
 	url = https://github.com/poise/python.git
+[submodule "cookbooks/zlib"]
+	path = cookbooks/zlib
+	url = https://github.com/opscode-cookbooks/zlib.git
