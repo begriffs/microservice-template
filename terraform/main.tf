@@ -45,14 +45,6 @@ resource "aws_security_group" "public" {
   name = "public"
   description = "SSH and HTTP from everywhere"
 
-  # SSH access from anywhere
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   # HTTP access from anywhere
   ingress {
     from_port = 80
@@ -224,6 +216,20 @@ resource "aws_security_group" "ssh" {
   }
 }
 
+resource "aws_security_group" "public_ssh" {
+  name = "public_ssh"
+  description = "Public ssh access"
+  vpc_id = "${aws_vpc.default.id}"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/0"]
+  }
+}
+
+
 ### Routers
 
 resource "aws_route_table" "public" {
@@ -247,7 +253,9 @@ resource "aws_instance" "web" {
   subnet_id = "${aws_subnet.public.id}"
 
   ami = "${var.grafana-ami}"
-  security_groups = ["${aws_security_group.public.id}", "${aws_security_group.consul.id}"]
+  security_groups = ["${aws_security_group.public.id}",
+                     "${aws_security_group.consul.id}",
+                     "${aws_security_group.public_ssh.id}"]
   associate_public_ip_address = true
 }
 
@@ -282,13 +290,25 @@ resource "aws_instance" "rabbitmq" {
                      "${aws_security_group.ssh.id}"]
 }
 
-resource "aws_instance" "halcyon" {
+resource "aws_instance" "scraper" {
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.public.id}"
 
   ami = "${var.halcyon-ami}"
-  security_groups = ["${aws_security_group.ssh.id}"]
+  security_groups = ["${aws_security_group.public_ssh.id}"]
+
+  connection {
+    user = "ec2-user"
+    key_file = "~/.ssh/terraform.pem"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo /app/halcyon/halcyon install https://github.com/begriffs/micro-scraper.git"
+    ]
+  }
+
+  count = 1
 }
 
 resource "aws_instance" "consul0" {
