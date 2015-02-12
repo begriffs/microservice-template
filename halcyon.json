@@ -13,7 +13,8 @@
     "source_ami": "ami-4b6f650e",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
-    "ami_name": "Halcyon {{timestamp}}"
+    "ami_name": "Halcyon {{timestamp}}",
+    "ami_groups": ["all"]
   }],
   "provisioners": [{
     "type": "chef-solo",
