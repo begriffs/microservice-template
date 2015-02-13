@@ -46,6 +46,10 @@ The scalable monitored template for cluster infrastructure.
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' statsd.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' influx.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' grafana.json
+    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' rabbitmq.json
+
+    # for haskell workers
+    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' halcyon.json
     ```
 
 6. Deploy machine images.
