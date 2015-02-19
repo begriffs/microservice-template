@@ -1,4 +1,4 @@
-### Microservice Template ([see video](foo))
+### Microservice Template ([see video](http://begriffs.com/posts/2015-02-15-microservice-template.html))
 
 The scalable monitored template for cluster infrastructure.
 
