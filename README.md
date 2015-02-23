@@ -1,4 +1,4 @@
-### Microservice Template ([see video](foo))
+### Microservice Template ([see video](http://begriffs.com/posts/2015-02-15-microservice-template.html))
 
 The scalable monitored template for cluster infrastructure.
 
@@ -21,14 +21,17 @@ The scalable monitored template for cluster infrastructure.
     a new user and note their security credentials (ID and secret key).
     Then attach a user policy of "Power User" to the newly created user.
 
-3. Clone this repo including its chef recipe submodules.
+3. [Create EC2 keypair](https://console.aws.amazon.com/ec2/v2/home?region=us-west-1#KeyPairs:sort=keyName)
+    named `terraform`.
+
+4. Clone this repo including its chef recipe submodules.
     ```bash
     git clone --recursive https://github.com/begriffs/microservice-template.git
 
     # if you've already cloned the repo you can do: git submodule update --init
     ```
 
-4. Install <a href="https://www.packer.io/" target="_blank">Packer</a> and
+5. Install <a href="https://www.packer.io/" target="_blank">Packer</a> and
     <a href="https://www.terraform.io/" target="_blank">Terraform</a>. On a
     Mac you can install them with homebrew:
     ```bash
@@ -37,7 +40,7 @@ The scalable monitored template for cluster infrastructure.
     brew install terraform
     ```
 
-5. Create machine images (AMI) using your credentials.
+6. Create machine images (AMI) using your credentials.
     When running each of these commands **write down** the AMI ids
     each one generates. They will be of the form `ami-[hash]`. You
     will need to remember which command created which AMI.
@@ -67,9 +70,15 @@ The scalable monitored template for cluster infrastructure.
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' statsd.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' influx.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' grafana.json
+    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' rabbitmq.json
+
+    # for haskell workers
+    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' halcyon.json
     ```
 
-6. Deploy machine images.
+7. Deploy machine images.
+    Edit `terraform/vars.tf` and fill in the ami instances created by
+    the previous steps. Leave the `aws` keys blank.
     Copy the Terraform variables example to a file without the `.example`
     and fill it in. Optionally provide a region and availability zone. 
     All other information is required.  A default region of `us-west-1` 
@@ -88,17 +97,19 @@ The scalable monitored template for cluster infrastructure.
 
 The server exposes web interfaces for several services.
 
-Port | Service
----- | -------------------------------------
-80   | [Grafana](http://grafana.org/) charts
-8500 | Consul server status and key/vals
-8080 | InfluxDB admin panel
-8086 | InfluxDB API used by Grafana
+Port  | Service
+----- | -------------------------------------
+80    | [Grafana](http://grafana.org/) charts
+8500  | Consul server status and key/vals
+8080  | InfluxDB admin panel
+8086  | InfluxDB API used by Grafana
+15672 | RabbitMQ management console
 
 Influx has been configured with two databases, `metrics` and
 `grafana`. Cluster data accumulates in the former and Grafana stores
 your chart settings in the latter. The Influx user `grafana` (password
-`grafpass`) has full access to both tables.
+`grafpass`) has full access to both tables. RabbitMQ is set up with
+user `guest` password `guest`.
 
 #### Collecting more stats
 

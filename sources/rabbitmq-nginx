@@ -1,0 +1,10 @@
+# Proxy InfluxDB UI
+server {
+  listen *:15672;
+
+  location ~ / {
+    resolver 127.0.0.1;
+    set $admin "http://rabbitmq.node.consul:15672";
+    proxy_pass $admin;
+  }
+}

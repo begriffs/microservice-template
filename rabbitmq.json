@@ -1,19 +1,19 @@
 {
   "variables": {
-    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
-    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "region": "us-west-1",
-    "source_ami": "ami-4b6f650e"
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "broker_id": "",
+    "base_ami": ""
   },
   "builders": [{
     "type": "amazon-ebs",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "region": "{{user `region`}}",
-    "source_ami": "{{user `source_ami`}}",
+    "region": "us-west-1",
+    "source_ami": "ami-4b6f650e",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
-    "ami_name": "InfluxDB {{timestamp}}",
+    "ami_name": "RabbitMQ {{timestamp}}",
     "ami_groups": ["all"]
   }],
   "provisioners": [{
@@ -21,17 +21,23 @@
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[influxdb::default]",
-      "recipe[consul::default]",
       "recipe[collectd]",
       "recipe[collectd::attribute_driven]",
+      "recipe[python]",
+      "recipe[rabbitmq]",
+      "recipe[rabbitmq::mgmt_console]",
+      "recipe[consul]",
       "recipe[dnsmasq::dns]"
     ],
     "json": {
+      "rabbitmq": {
+        "enabled_plugins": ["rabbitmq_management"],
+        "loopback_users": []
+      },
       "consul": {
         "service_mode": "client",
         "retry_on_join": true,
-        "node_name": "influxdb",
+        "node_name": "rabbitmq",
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
       },
       "collectd": {
@@ -55,9 +61,10 @@
               "IgnoreSelected": true
             }
           },
+          "python": { },
           "write_graphite": {
             "config": {
-              "Prefix": "collectd.influxdb."
+              "Prefix": "collectd.rabbitmq."
             }
           }
         }
@@ -69,27 +76,28 @@
       }
     }
   }, {
-    "type": "shell",
-    "inline": [
-      "sleep 5",
-      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"grafana\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"metrics\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db/grafana/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db/metrics/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'"
-    ]
-  }, {
-    "type": "file",
-    "source": "sources/influxdb.toml",
-    "destination": "/tmp/config.toml"
-  }, {
     "type": "file",
     "source": "sources/network",
     "destination": "/tmp/network"
   }, {
+    "type": "file",
+    "source": "sources/collectd-rabbitmq/config/types.db.custom",
+    "destination": "/tmp/rabbitmq.types.db"
+  }, {
+    "type": "file",
+    "source": "sources/collectd-rabbitmq/rabbitmq.py",
+    "destination": "/tmp/rabbitmq.py"
+  }, {
+    "type": "file",
+    "source": "sources/rabbitmq.conf",
+    "destination": "/tmp/rabbitmq.conf"
+  }, {
     "type": "shell",
     "inline": [
-      "sudo cp /tmp/config.toml /opt/influxdb/shared/config.toml",
-      "sudo chown influxdb:influxdb /opt/influxdb/shared/config.toml",
+      "sudo chkconfig --add rabbitmq-server",
+      "sudo sh -c 'cat /tmp/rabbitmq.types.db.custom >> /opt/collectd/share/collectd/rabbitmq.types.db'",
+      "sudo sh -c 'cp /tmp/rabbitmq.py /opt/collectd/lib/collectd/rabbitmq.py'",
+      "sudo sh -c 'cp /tmp/rabbitmq.conf /opt/collectd/etc/conf.d/rabbitmq.conf'",
       "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
       "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
       "sudo cp /tmp/network /etc/sysconfig/network",

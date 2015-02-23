@@ -1,37 +1,41 @@
 {
   "variables": {
-    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
-    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "region": "us-west-1",
-    "source_ami": "ami-4b6f650e"
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "base_ami": ""
   },
   "builders": [{
     "type": "amazon-ebs",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "region": "{{user `region`}}",
-    "source_ami": "{{user `source_ami`}}",
+    "region": "us-west-1",
+    "source_ami": "ami-4b6f650e",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
-    "ami_name": "InfluxDB {{timestamp}}",
-    "ami_groups": ["all"]
+    "ami_name": "Parkeeper {{timestamp}}"
   }],
   "provisioners": [{
     "type": "chef-solo",
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
     "run_list": [
-      "recipe[influxdb::default]",
+      "recipe[golang]",
+      "recipe[golang::packages]",
       "recipe[consul::default]",
       "recipe[collectd]",
       "recipe[collectd::attribute_driven]",
       "recipe[dnsmasq::dns]"
     ],
     "json": {
+      "go": {
+        "packages": [
+          "github.com/glerchundi/parkeeper"
+        ]
+      },
       "consul": {
         "service_mode": "client",
         "retry_on_join": true,
-        "node_name": "influxdb",
+        "node_name": "parkeeper",
         "servers": ["10.0.1.100", "10.0.1.101", "10.0.1.102"]
       },
       "collectd": {
@@ -57,7 +61,7 @@
           },
           "write_graphite": {
             "config": {
-              "Prefix": "collectd.influxdb."
+              "Prefix": "collectd.parkeeper."
             }
           }
         }
@@ -69,18 +73,9 @@
       }
     }
   }, {
-    "type": "shell",
-    "inline": [
-      "sleep 5",
-      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"grafana\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db?u=root&p=root' -d '{\"name\": \"metrics\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db/grafana/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'",
-      "curl -X POST 'http://127.0.0.1:8086/db/metrics/users?u=root&p=root' -d '{\"name\": \"grafana\", \"password\": \"grafpass\"}'"
-    ]
-  }, {
     "type": "file",
-    "source": "sources/influxdb.toml",
-    "destination": "/tmp/config.toml"
+    "source": "sources/parkeeper.init",
+    "destination": "/tmp/parkeeper.init"
   }, {
     "type": "file",
     "source": "sources/network",
@@ -88,8 +83,10 @@
   }, {
     "type": "shell",
     "inline": [
-      "sudo cp /tmp/config.toml /opt/influxdb/shared/config.toml",
-      "sudo chown influxdb:influxdb /opt/influxdb/shared/config.toml",
+      "sudo cp /tmp/parkeeper.init /etc/init.d/parkeeper",
+      "sudo chmod 0755 /etc/init.d/parkeeper",
+      "sudo mkdir /var/run/parkeeper",
+      "sudo chkconfig --add parkeeper",
       "sudo sh -c 'echo conf-dir=/etc/dnsmasq.d >> /etc/dnsmasq.conf'",
       "sudo sh -c 'echo \"prepend domain-name-servers 127.0.0.1;\" >> /etc/dhcp/dhclient.conf'",
       "sudo cp /tmp/network /etc/sysconfig/network",

@@ -67,12 +67,39 @@
 [submodule "cookbooks/dnsmasq"]
 	path = cookbooks/dnsmasq
 	url = https://github.com/hw-cookbooks/dnsmasq.git
-[submodule "cookbooks/resolver"]
-	path = cookbooks/resolver
-	url = https://github.com/opscode-cookbooks/resolver.git
 [submodule "cookbooks/grafana"]
 	path = cookbooks/grafana
 	url = https://github.com/begriffs/chef-grafana.git
 [submodule "cookbooks/influxdb"]
 	path = cookbooks/influxdb
 	url = https://github.com/zeroXten/influxdb-chef.git
+[submodule "cookbooks/java"]
+	path = cookbooks/java
+	url = https://github.com/agileorbit-cookbooks/java.git
+[submodule "cookbooks/builder"]
+	path = cookbooks/builder
+	url = https://github.com/hw-cookbooks/builder.git
+[submodule "cookbooks/kafka"]
+	path = cookbooks/kafka
+	url = https://github.com/cerner/cerner_kafka.git
+[submodule "cookbooks/ulimit"]
+	path = cookbooks/ulimit
+	url = https://github.com/bmhatfield/chef-ulimit.git
+[submodule "cookbooks/rabbitmq"]
+	path = cookbooks/rabbitmq
+	url = https://github.com/jjasghar/rabbitmq.git
+[submodule "cookbooks/erlang"]
+	path = cookbooks/erlang
+	url = https://github.com/opscode-cookbooks/erlang.git
+[submodule "cookbooks/yum-erlang_solutions"]
+	path = cookbooks/yum-erlang_solutions
+	url = https://github.com/chef-cookbooks/yum-erlang_solutions.git
+[submodule "sources/collectd-rabbitmq"]
+	path = sources/collectd-rabbitmq
+	url = https://github.com/NYTimes/collectd-rabbitmq.git
+[submodule "cookbooks/python"]
+	path = cookbooks/python
+	url = https://github.com/poise/python.git
+[submodule "cookbooks/zlib"]
+	path = cookbooks/zlib
+	url = https://github.com/opscode-cookbooks/zlib.git
