@@ -20,7 +20,6 @@ resource "aws_subnet" "public" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.0.0/24"
-  availability_zone = "${var.availability_zone}"
   map_public_ip_on_launch = true
 }
 
@@ -28,14 +27,12 @@ resource "aws_subnet" "consul_cluster" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.1.0/24"
-  availability_zone = "${var.availability_zone}"
 }
 
 resource "aws_subnet" "private_services" {
   vpc_id = "${aws_vpc.default.id}"
 
   cidr_block = "10.0.2.0/24"
-  availability_zone = "${var.availability_zone}"
 }
 
 ### Security groups
@@ -310,7 +307,7 @@ resource "aws_instance" "scraper" {
     ]
   }
 
-  count = "${var.include_halcyon}"
+  count = "${var.halcyon_workers}"
 }
 
 resource "aws_instance" "consul0" {

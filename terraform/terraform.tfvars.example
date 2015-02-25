@@ -1,12 +1,15 @@
 aws_access_key = ""
 aws_secret_key = ""
 
-region=""
-availability_zone=""
-
 consul_ami = ""
 statsd_ami = ""
 grafana_ami = ""
 influx_ami = ""
+rabbitmq_ami = ""
+halcyon_ami = ""
 
-key_name=""
+halcyon_workers = 0
+
+region = "us-west-1"
+
+key_name = ""

@@ -5,10 +5,6 @@ variable "region" {
   default="us-west-1"
 }
 
-variable "availability_zone" {
-  default="us-west-1a"
-}
-
 variable "grafana_ami" {}
 variable "consul_ami" {}
 variable "influx_ami" {}
@@ -21,7 +17,7 @@ variable "halcyon_ami" {
 }
 
 # To include halcyon workers set variable to number of workers
-variable "include_halcyon" {
+variable "halcyon_workers" {
   default = 0
 }
 

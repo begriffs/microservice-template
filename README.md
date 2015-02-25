@@ -12,8 +12,10 @@ The scalable monitored template for cluster infrastructure.
 
 1. Sign up for Amazon Web Services free tier [here](http://aws.amazon.com/free/).
     It is **extremely important** to ensure the region in your
-    Amazon Web Console is set to "N. California" or future steps
-    will fail mysteriously.
+    Amazon Web Console is set to "N. California" as the defaults 
+    are all configured to use this region in future steps. If you decide
+    to use a different region you will need to specify the region in future
+    steps when noted.
 
 2. Create Amazon IAM credentials for deployment.
     Assuming you are signed into the AWS console, visit the [user
@@ -21,8 +23,7 @@ The scalable monitored template for cluster infrastructure.
     a new user and note their security credentials (ID and secret key).
     Then attach a user policy of "Power User" to the newly created user.
 
-3. [Create EC2 keypair](https://console.aws.amazon.com/ec2/v2/home?region=us-west-1#KeyPairs:sort=keyName)
-    named `terraform`.
+3. [Create EC2 keypair](https://console.aws.amazon.com/ec2/v2/home?region=us-west-1#KeyPairs:sort=keyName).
 
 4. Clone this repo including its chef recipe submodules.
     ```bash
@@ -72,20 +73,19 @@ The scalable monitored template for cluster infrastructure.
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' grafana.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' rabbitmq.json
 
-    # for haskell workers
+    # for haskell workers (optional)
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' halcyon.json
     ```
 
 7. Deploy machine images.
-    Edit `terraform/vars.tf` and fill in the ami instances created by
-    the previous steps. Leave the `aws` keys blank.
-    Copy the Terraform variables example to a file without the `.example`
-    and fill it in. Optionally provide a region and availability zone. 
-    All other information is required.  A default region of `us-west-1` 
-    and availabilty zone of `us-west-1a` are used.
     ```bash
     cp terraform/terraform.tfvars{.example,}
     ```
+    Edit `terraform/terraform.tfvars` and fill in the ami instances created by
+    the previous steps, the key name associated with your keypair created on EC2,
+    and your AWS keys. Optionally provide a region matching the region of your amis.
+    A default region of `us-west-1`. If you built a halcyon ami, you will need to
+    specify the number of halcyon workers for the ami to be used.
 
     Now the fun part. Go into the terraform directory and run `make`.
 
