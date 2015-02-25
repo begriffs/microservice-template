@@ -12,16 +12,18 @@ The scalable monitored template for cluster infrastructure.
 
 1. Sign up for Amazon Web Services free tier [here](http://aws.amazon.com/free/).
     It is **extremely important** to ensure the region in your
-    Amazon Web Console is set to "N. California" or future steps
-    will fail mysteriously.
+    Amazon Web Console is set to "N. California" as the defaults 
+    are all configured to use this region in future steps. If you decide
+    to use a different region you will need to specify the region in future
+    steps when noted.
+
 2. Create Amazon IAM credentials for deployment.
     Assuming you are signed into the AWS console, visit the [user
     admin](https://console.aws.amazon.com/iam/home#users) page. Create
     a new user and note their security credentials (ID and secret key).
     Then attach a user policy of "Power User" to the newly created user.
 
-3. [Create EC2 keypair](https://console.aws.amazon.com/ec2/v2/home?region=us-west-1#KeyPairs:sort=keyName)
-    named `terraform`.
+3. [Create EC2 keypair](https://console.aws.amazon.com/ec2/v2/home?region=us-west-1#KeyPairs:sort=keyName).
 
 4. Clone this repo including its chef recipe submodules.
     ```bash
@@ -43,27 +45,47 @@ The scalable monitored template for cluster infrastructure.
     When running each of these commands **write down** the AMI ids
     each one generates. They will be of the form `ami-[hash]`. You
     will need to remember which command created which AMI.
+    AWS credentials are required and can be provided on the command line or
+    accessed from environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
+    Optionally the region can be specified via command line. If specifying a region the proper
+    source ami must also be provided via command line.
+
+    ####Region to source ami mappings.
+    ```bash
+       us-east-1: ami-b66ed3de
+       us-west-1: ami-4b6f650e
+       us-west-2: ami-b5a7ea85
+       eu-west-1: ami-607bd917
+       ap-southeast-1: ami-ac5c7afe
+       ap-southeast-2: ami-63f79559
+       ap-northeast-1: ami-4985b048
+       sa-east-1: ami-8737829a
+    ```
+
+    If no region is specified on the command line a default region of `us-west-1` is used
+    with a source_ami of `ami-4b6f650e`.
 
     ```bash
-    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' consul.json
+    packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' -var 'region=us-east-1' -var 'source_ami=ami-b66ed3de' consul.json 
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' statsd.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' influx.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' grafana.json
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' rabbitmq.json
 
-    # for haskell workers
+    # for haskell workers (optional)
     packer build -var 'aws_access_key=xxx' -var 'aws_secret_key=xxx' halcyon.json
     ```
 
 7. Deploy machine images.
-    Edit `terraform/vars.tf` and fill in the ami instances created by
-    the previous steps. Leave the `aws` keys blank.
-
-    Copy the Terraform variables example to a file without the `.example`
-    and fill it in.
     ```bash
     cp terraform/terraform.tfvars{.example,}
     ```
+    Edit `terraform/terraform.tfvars` and fill in the ami instances created by
+    the previous steps, the key name associated with your keypair created on EC2,
+    and your AWS keys. Optionally provide a region matching the region of your amis.
+    A default region of `us-west-1`. If you built a halcyon ami, you will need to
+    specify the number of halcyon workers for the ami to be used.
 
     Now the fun part. Go into the terraform directory and run `make`.
 
