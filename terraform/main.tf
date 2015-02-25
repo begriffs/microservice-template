@@ -262,12 +262,14 @@ resource "aws_instance" "web" {
 resource "aws_instance" "influxdb" {
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
-  subnet_id = "${aws_subnet.private_services.id}"
+  subnet_id = "${aws_subnet.public.id}"
 
   ami = "${var.influx_ami}"
   security_groups = ["${aws_security_group.influxdb.id}",
                      "${aws_security_group.consul.id}",
-                     "${aws_security_group.ssh.id}"]
+                     "${aws_security_group.ssh.id}",
+                     "${aws_security_group.public.id}"
+                    ]
 }
 
 resource "aws_instance" "statsd" {
@@ -284,7 +286,7 @@ resource "aws_instance" "rabbitmq" {
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.private_services.id}"
 
-  ami = "${var.rabbitmq-ami}"
+  ami = "${var.rabbitmq_ami}"
   security_groups = ["${aws_security_group.rabbitmq.id}",
                      "${aws_security_group.consul.id}",
                      "${aws_security_group.ssh.id}"]
@@ -295,7 +297,7 @@ resource "aws_instance" "scraper" {
   key_name = "${var.key_name}"
   subnet_id = "${aws_subnet.public.id}"
 
-  ami = "${var.halcyon-ami}"
+  ami = "${var.halcyon_ami}"
   security_groups = ["${aws_security_group.public_ssh.id}"]
 
   connection {
@@ -308,7 +310,7 @@ resource "aws_instance" "scraper" {
     ]
   }
 
-  count = 1
+  count = "${var.include_halcyon}"
 }
 
 resource "aws_instance" "consul0" {

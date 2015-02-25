@@ -14,12 +14,15 @@ variable "consul_ami" {}
 variable "influx_ami" {}
 variable "statsd_ami" {}
 
-variable "rabbitmq-ami" {
+variable "rabbitmq_ami" {}
+
+variable "halcyon_ami" {
   default = ""
 }
 
-variable "halcyon-ami" {
-  default = ""
+# To include halcyon workers set variable to number of workers
+variable "include_halcyon" {
+  default = 0
 }
 
 variable "key_name" {
