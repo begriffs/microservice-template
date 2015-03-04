@@ -26,7 +26,8 @@
       "recipe[collectd]",
       "recipe[collectd::attribute_driven]",
       "recipe[dnsmasq::dns]",
-      "recipe[nodejs::nodejs_from_binary]"
+      "recipe[nodejs::nodejs_from_binary]",
+      "recipe[ulimit]"
     ],
     "json": {
       "consul": {
@@ -66,6 +67,16 @@
       "dnsmasq": {
         "dns": {
           "server": "/consul/127.0.0.1#8600"
+        }
+      },
+      "ulimit": {
+        "users": {
+          "ec2-user": {
+            "filehandle_limit": 1048576
+          },
+          "influxdb": {
+            "filehandle_limit": 1048576
+          }
         }
       }
     }
