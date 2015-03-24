@@ -107,16 +107,5 @@
       "sudo cp /tmp/network /etc/sysconfig/network",
       "sudo sh -c 'echo \"127.0.0.1 self self.localdomain\" >> /etc/hosts'"
     ]
-  },  {
-    "type": "file",
-    "source": "sources/influxdb-archive",
-    "destination": "$HOME"
-  }, {
-    "type": "shell",
-    "inline": [
-      "sleep 5",
-      "cd $HOME/influxdb-archive && npm install",
-      "sudo sh -c 'echo -e \"AWS_ACCESS_KEY_ID={{user `aws_access_key`}}\nAWS_SECRET_ACCESS_KEY={{user `aws_secret_key`}}\nREGION={{user `region`}}\n\n* * * * 0 ec2-user /usr/local/bin/node /home/ec2-user/influxdb-archive/index.js\n\" > /etc/crontab'"
-    ]
   }]
 }
