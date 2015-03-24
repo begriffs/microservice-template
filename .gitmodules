@@ -103,6 +103,3 @@
 [submodule "cookbooks/zlib"]
 	path = cookbooks/zlib
 	url = https://github.com/opscode-cookbooks/zlib.git
-[submodule "sources/influxdb-archive"]
-	path = sources/influxdb-archive
-	url = https://github.com/loop-recur/influxdb-archive.git
