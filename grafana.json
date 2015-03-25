@@ -17,6 +17,11 @@
     "ami_groups": ["all"]
   }],
   "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sudo yum -y update"
+    ]
+  }, {
     "type": "chef-solo",
     "install_command": "curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash /dev/stdin -v 11",
     "cookbook_paths": ["cookbooks"],
