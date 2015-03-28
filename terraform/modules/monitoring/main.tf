@@ -96,7 +96,7 @@ resource "aws_security_group" "influxdb" {
   }
 }
 
-resource "aws_instance" "bastion_monitor" {
+resource "aws_instance" "monitor_bastion" {
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   subnet_id = "${var.subnet_id}"
@@ -124,5 +124,5 @@ resource "aws_instance" "influxdb" {
 }
 
 output "public_ip" {
-  value = "${aws_instance.bastion_monitor.public_ip}"
+  value = "${aws_instance.monitor_bastion.public_ip}"
 }
