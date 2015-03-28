@@ -23,7 +23,7 @@ module "monitoring" {
   sg_consul_id = "${module.core_vpc.sg_consul_id}"
   sg_ssh_id = "${module.core_vpc.sg_ssh_id}"
   sg_public_ssh_id = "${module.core_vpc.sg_public_ssh_id}"
-  subnet_id = "${module.core_vpc.public_subnet.id}"
+  subnet_id = "${module.core_vpc.public_subnet_id}"
 }
 
 module "rabbitmq" {
@@ -35,7 +35,7 @@ module "rabbitmq" {
   rabbitmq_ami = "${var.rabbitmq_ami}"
   sg_consul_id = "${module.core_vpc.sg_consul_id}"
   sg_ssh_id = "${module.core_vpc.sg_ssh_id}"
-  subnet_id = "${module.core_vpc_.private_id}"
+  subnet_id = "${module.core_vpc.private_subnet_id}"
 }
 
 module "statsd" {
