@@ -106,7 +106,7 @@ resource "aws_instance" "monitor_bastion" {
                      "${var.sg_consul_id}",
                      "${var.sg_public_ssh_id}"]
   associate_public_ip_address = true
-  lifecycle { create_before_destroy = true }
+  /* lifecycle { create_before_destroy = true } */
 }
 
 resource "aws_instance" "influxdb" {
@@ -120,7 +120,7 @@ resource "aws_instance" "influxdb" {
                      "${var.sg_ssh_id}",
                      "${aws_security_group.monitor_bastion.id}"
                     ]
-  lifecycle { create_before_destroy = true }
+  /* lifecycle { create_before_destroy = true } */
 }
 
 output "public_ip" {

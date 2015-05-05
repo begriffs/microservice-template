@@ -135,7 +135,7 @@ resource "aws_instance" "consul" {
   ami = "${var.consul_ami}"
   security_groups = ["${aws_security_group.consul.id}"]
 
-  lifecycle { create_before_destroy = true }
+  /* lifecycle { create_before_destroy = true } */
 
   count = "${var.consul_cluster_size}"
 }

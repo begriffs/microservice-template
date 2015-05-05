@@ -27,5 +27,5 @@ resource "aws_instance" "statsd" {
   ami = "${var.statsd_ami}"
   security_groups = ["${aws_security_group.statsd.id}", "${var.sg_consul_id}"]
 
-  lifecycle { create_before_destroy = true }
+  /* lifecycle { create_before_destroy = true } */
 }
